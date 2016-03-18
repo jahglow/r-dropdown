@@ -17,15 +17,15 @@ The child element with the class `dropdown-content` will be used as the dropdown
 menu. It could be a `paper-menu` or element that triggers `iron-select` when
 selecting its children.
 
-Example:
+Example of a multi-select dropdown:
 ```html
-    <r-dropdown label="Your favourite pastry">
-      <paper-menu class="dropdown-content">
-        <paper-item>Croissant</paper-item>
-        <paper-item>Donut</paper-item>
-        <paper-item>Financier</paper-item>
-        <paper-item>Madeleine</paper-item>
-      </paper-menu>
+    <r-dropdown label="Your favourite pastry" multi>
+      <paper-listbox class="dropdown-content" attr-for-selected="selected" multi>
+        <paper-icon-item><iron-icon icon="check"></iron-icon>Croissant</paper-item>
+        <paper-icon-item><iron-icon icon="check"></iron-icon>Donut</paper-item>
+        <paper-icon-item><iron-icon icon="check"></iron-icon>Financier</paper-item>
+        <paper-icon-item><iron-icon icon="check"></iron-icon>Madeleine</paper-item>
+      </paper-listbox>
     </r-dropdown>
 ```
 This example renders a dropdown menu with 4 options.
