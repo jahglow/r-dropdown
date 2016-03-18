@@ -69,9 +69,9 @@ respectively.
 
 @group Reportal Elements
 @element r-dropdown
-@hero hero.svg
 @demo demo/index.html
 -->
+
 <dom-module id="r-dropdown">
   <template>
     <style>
@@ -203,6 +203,54 @@ respectively.
       behaviors: [
         Confirmit.RDropdownBehavior
       ],
+      properties:{
+        /**
+         * The derived "label" of the currently selected item. This value
+         * is the `label` property on the selected item if set, or else the
+         * trimmed text content of the selected item.
+         */
+        selectedItemLabel: {
+          type: String,
+          notify: true,
+          readOnly: true
+        },
+
+        /**
+         * The last selected item. An item is selected if the dropdown menu has
+         * a child with class `dropdown-content`, and that child triggers an
+         * `iron-select` event with the selected `item` in the `detail`.
+         *
+         * @type {?Object}
+         */
+        selectedItem: {
+          type: Object,
+          notify: true,
+          readOnly: true
+        },
+        /**
+         * The array of currently selected items. An item is selected if the dropdown menu has
+         * a child with class `dropdown-content`, and that child triggers an
+         * `iron-select` event with the selected `item` in the `detail`.
+         * @type {?Array}
+         */
+        selectedItems: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+
+        /**
+         * The value for this element that will be used when submitting in
+         * a form. It is read only, and will always have the same value
+         * as `selectedItemLabel`.
+         */
+        value: {
+          type: String,
+          notify: true,
+          readOnly: true
+        }
+
+      },
 
       listeners: {
         'tap': '_onTap'
@@ -279,8 +327,46 @@ respectively.
         if (Polymer.Gestures.findOriginalTarget(event) === this) {
           this.open();
         }
+      },
+      /**
+       * Compute the label for the dropdown given a selected item.
+       *
+       * @param {Element} selectedItem A selected Element item, with an
+       * optional `label` property.
+       */
+      _selectedItemChanged: function (selectedItem) {
+        var value = '';
+        if (!this.multi) {
+          if (!selectedItem) {
+            value = '';
+          } else {
+            value = selectedItem.label || selectedItem.textContent.trim();
+          }
+          this._setValue(value);
+          this._setSelectedItemLabel(value);
+        }
+      },
+      /**
+       * Compute the label for the dropdown given an array of selected items.
+       *
+       * @param {!Object} selectedItems A splice of selected elements
+       */
+      _selectedItemsChanged: function (selectedItems, multiThreshold, multiThresholdLabel) {
+        var value = '';
+        if (this.multi) {
+          if (this.selectedItems.length === 0) {
+            value = '';
+          } else if (this.selectedItems.length <= multiThreshold) {
+            value = this.selectedItems.map(function (item) {
+              return item.label ? item.label : item.textContent.trim()
+            }).join(', ');
+          } else {
+            value = this.selectedItems.length + ' ' + multiThresholdLabel
+          }
+        }
+        this._setValue(value);
+        this._setSelectedItemLabel(value);
       }
-
     });
   })();
 </script>
